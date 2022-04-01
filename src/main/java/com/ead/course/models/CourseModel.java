@@ -35,11 +35,11 @@ public class CourseModel implements Serializable {
     private String imageUrl;
     @CreationTimestamp
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime creationDate;
     @UpdateTimestamp
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateDate;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -55,4 +55,6 @@ public class CourseModel implements Serializable {
     @Fetch(FetchMode.SUBSELECT) // faz uma consulta separada para trazer os módulos
     //@OnDelete(action = OnDeleteAction.CASCADE) //DELEGA PARA O BD EXCLUIR OS FILHOS - MELHOR DESEMPENHO DO QUE O ORPHALREMOVE, PORÉM NÃO TEMOS CONTROLE DO QUE ESTÁ EXCLUINDO SE CASO DÊ ERRO
     private Set<ModuleModel> modules;
+
+
 }
