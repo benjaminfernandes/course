@@ -1,10 +1,12 @@
 package com.ead.course.clients;
 
+import com.ead.course.dtos.CourseUserDto;
 import com.ead.course.dtos.ResponsePageDto;
 import com.ead.course.dtos.UserDto;
 import com.ead.course.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +20,20 @@ import java.util.UUID;
 
 @Log4j2
 @Component
-public class CourseClient {
+public class AuthUserClient {
 
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
     private UtilsService utilsService;
+    @Value("${ead.api.url.authuser}")
+    private String requestUrlAuthUser;
 
     //Utilizando API Composition Pattern
     public Page<UserDto> getAllUsersByCourse(UUID courseId, Pageable pageable){
         //List<CourseDto> searchResult = null;
         ResponseEntity<ResponsePageDto<UserDto>> result = null;
-        String url = this.utilsService.createUrl(courseId, pageable);
+        String url = requestUrlAuthUser + this.utilsService.createUrlGetAllUsersByCourse(courseId, pageable);
 
         log.debug("Request URL: {}", url);
         log.info("Request URL: {}", url);
@@ -47,4 +51,16 @@ public class CourseClient {
         return result.getBody();
     }
 
+    public ResponseEntity<UserDto> getOneUserById(UUID userId){
+        String url = requestUrlAuthUser + "/users/" + userId;
+        return this.restTemplate.exchange(url, HttpMethod.GET, null, UserDto.class);
+    }
+
+    public void postSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        String url = requestUrlAuthUser + "/users/"+userId+"/courses/subscription";
+        var courseUserDto = new CourseUserDto();
+        courseUserDto.setUserId(userId);
+        courseUserDto.setCourseId(courseId);
+        restTemplate.postForObject(url, courseUserDto, String.class);
+    }
 }
