@@ -37,11 +37,14 @@ public class CorseUserController {
     private CourseUserService courseUserService;
 
     @GetMapping("/courses/{courseId}/users")
-    public ResponseEntity<Page<UserDto>> getAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "userId",
+    public ResponseEntity<?> getAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "userId",
                                                                 direction = Sort.Direction.ASC) Pageable pageable,
                                                              @PathVariable(value = "courseId") UUID courseId){
-
-        return ResponseEntity.status(HttpStatus.OK).body(this.authUserClient.getAllUsersByCourse(courseId, pageable));
+        Optional<CourseModel> courseModelOptional = this.courseService.findById(courseId);
+        if(courseModelOptional.isEmpty()){
+            return status(HttpStatus.NOT_FOUND).body("Course not found");
+        }
+        return status(HttpStatus.OK).body(this.authUserClient.getAllUsersByCourse(courseId, pageable));
     }
 
     @PostMapping("/courses/{courseId}/users/subscription")
@@ -71,5 +74,15 @@ public class CorseUserController {
                 .saveAndSendSubscriptionUserInCourse(courseModelOptional.get().convertToCourseUserModel(subscriptionDto.getUserId()));
 
         return status(HttpStatus.CREATED).body(courseUserModel);
+    }
+
+    @DeleteMapping("/courses/users/{userId}")
+    public ResponseEntity<?> deleteCourseUserByUser(@PathVariable(value = "userId") UUID userId){
+        if(!this.courseUserService.existsByUserId(userId)){
+            return status(HttpStatus.NOT_FOUND).body("CourseUser not found");
+        }
+
+        this.courseUserService.deleteCourseUserByUser(userId);
+        return status(HttpStatus.OK).body("CourseUser deleted successfully");
     }
 }
