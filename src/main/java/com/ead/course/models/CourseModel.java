@@ -55,6 +55,9 @@ public class CourseModel implements Serializable {
     @Fetch(FetchMode.SUBSELECT) // faz uma consulta separada para trazer os módulos
     //@OnDelete(action = OnDeleteAction.CASCADE) //DELEGA PARA O BD EXCLUIR OS FILHOS - MELHOR DESEMPENHO DO QUE O ORPHALREMOVE, PORÉM NÃO TEMOS CONTROLE DO QUE ESTÁ EXCLUINDO SE CASO DÊ ERRO
     private Set<ModuleModel> modules;
-
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_COURSES_USERS", joinColumns = @JoinColumn(name = "course_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<UserModel> users;
 }
