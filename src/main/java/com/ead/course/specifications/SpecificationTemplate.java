@@ -69,6 +69,7 @@ public class SpecificationTemplate {
     }
 
     public static Specification<UserModel> userCourseId(final UUID courseId) {
+        //TODO AJUSTAR POIS NÃO ESTÁ FUNCIONANDO
         return (root, query, cb) -> {
             query.distinct(true);
             Root<UserModel> user = root;
