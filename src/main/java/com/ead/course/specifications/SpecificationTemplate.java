@@ -84,8 +84,8 @@ public class SpecificationTemplate {
             query.distinct(true);
             Root<CourseModel> course = root;
             Root<UserModel> user = query.from(UserModel.class);
-            Expression<Collection<UserModel>> coursesUsers = user.get("users");
-            return cb.and(cb.equal(user.get("userId"), userId), cb.isMember(user, coursesUsers));
+            Expression<Collection<CourseModel>> usersCourses = user.get("courses");
+            return cb.and(cb.equal(user.get("userId"), userId), cb.isMember(course, usersCourses));
         };
     }
 
