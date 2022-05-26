@@ -62,7 +62,7 @@ public class CourseUserController {
             return status(HttpStatus.CONFLICT).body("User is blocked");
         }
 
-        this.courseService.saveSubscriptionUserInCourse(courseModelOptional.get().getCourseId(), userModelOptional.get().getUserId());
+        this.courseService.saveSubscriptionUserInCourseAndSendNotification(courseModelOptional.get(), userModelOptional.get());
         return status(HttpStatus.CREATED).body("Subscription created successfully");
     }
 }
