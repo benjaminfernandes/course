@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,6 +35,7 @@ public class LessonController {
     @Autowired
     private ModuleService moduleService;
 
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR')")
     @PostMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<?> saveLesson(@PathVariable(value = "moduleId") UUID moduleId,
                                         @RequestBody @Valid LessonDto lessonDto){
@@ -53,6 +55,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonModel);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR')")
     @DeleteMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<?> deleteLesson(@PathVariable(value = "moduleId") UUID moduleId,
                                           @PathVariable(value = "lessonId") UUID lessonId){
@@ -67,6 +70,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully");
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR')")
     @PutMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<?> updateLesson(@PathVariable(value = "moduleId") UUID moduleId,
                                           @PathVariable(value = "lessonId") UUID lessonId,
@@ -84,6 +88,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body(lessonModel);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT')")
     @GetMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<Page<LessonModel>> getAllLesson(@PathVariable(value = "moduleId") UUID moduleId,
                                                           SpecificationTemplate.LessonSpec spec,
@@ -94,6 +99,7 @@ public class LessonController {
                 .findAllByModule(SpecificationTemplate.lessonModuleId2(moduleId).and(spec), pageable));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT')")
     @GetMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<?> getOneLesson(@PathVariable(value = "moduleId") UUID moduleId,
                                           @PathVariable(value = "lessonId") UUID lessonId){
